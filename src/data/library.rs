@@ -10,6 +10,14 @@ impl Input {
             num_blocks,
         }
     }
+
+    pub fn iter(&self) -> std::slice::Iter<'_, u8> {
+        self.input_string.iter()
+    }
+
+    pub fn num_blocks(&self) -> usize {
+        self.num_blocks
+    }
 }
 
 impl std::fmt::Debug for Input {

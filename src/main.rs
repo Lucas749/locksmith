@@ -7,6 +7,8 @@ pub mod data;
 pub mod encrypt;
 use encrypt::encrypt;
 
+use data::Input;
+
 fn main() {
     println!("This is Locksmith!");
 
@@ -18,7 +20,6 @@ fn main() {
     let p256_element: P256 = P256::new(0).unwrap();  
     println!("{:?}", p256_element);
 
-    println!("{}", encrypt());
-
-    println!("{:?}", data::get_input("long"));
+    let input: &Input = data::get_input("long");
+    println!("{}", encrypt(input));
 }

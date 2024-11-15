@@ -1,0 +1,2 @@
+These keys are for the parties to connect to each other.
+NOT MPC keyshares of the AES key – that is handled by MPC-ECDH.

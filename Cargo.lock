@@ -554,6 +554,7 @@ name = "locksmith"
 version = "0.1.0"
 dependencies = [
  "aes",
+ "clap",
  "hex",
  "lazy_static",
  "maestro",
