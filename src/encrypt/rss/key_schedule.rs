@@ -99,7 +99,7 @@ pub fn aes128_keyschedule_mal<Protocol: GF8InvBlackBoxSSMal>(
 
 pub fn keyshare_keyschedule(
     party: &mut Lut256SSMalParty,
-) -> Vec<AesKeyState> {
+) -> Vec<maestro::aes::AesKeyState> {
     // Generate random shares for each byte of our key share
     let shared_key: Vec<RssShare<GF8>> = AES_KEYSHARE[party.main_party_mut().i].iter()
         .map(|&b| {
@@ -133,5 +133,10 @@ pub fn keyshare_keyschedule(
     // (0..variant.n_rounds()+1)
     //     .map(|_| AesKeyState::from_rss_vec(shared_key.clone()))
     //     .collect()
-    aes128_keyschedule_mal(party, shared_key).unwrap()
+    let ks: Vec<AesKeyState> = aes128_keyschedule_mal(party, shared_key).unwrap();
+    
+    // cast back from custom AesKeyState (pub si, sii) to maestro AesKeyState for composability with other functions
+    ks.iter()
+        .map(|k| maestro::aes::AesKeyState::from_rss_vec(k.to_rss_vec()))
+        .collect()
 }
