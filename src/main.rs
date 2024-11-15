@@ -3,6 +3,9 @@ use maestro::share::gf8::GF8;
 
 use mpz_fields::p256::P256;
 
+pub mod data;
+pub mod encrypt;
+use encrypt::encrypt;
 
 fn main() {
     println!("This is Locksmith!");
@@ -14,4 +17,8 @@ fn main() {
     // Create element of P256 field for multi-party ECDH
     let p256_element: P256 = P256::new(0).unwrap();  
     println!("{:?}", p256_element);
+
+    println!("{}", encrypt());
+
+    println!("{:?}", data::get_input("long"));
 }

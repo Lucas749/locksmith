@@ -10,3 +10,4 @@ mpz-fields = { git = "https://github.com/privacy-scaling-explorations/mpz.git", 
 rand = "0.8"
 hex = "0.4"
 aes = "0.8"
+lazy_static = "1.5.0"

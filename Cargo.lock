@@ -555,6 +555,7 @@ version = "0.1.0"
 dependencies = [
  "aes",
  "hex",
+ "lazy_static",
  "maestro",
  "mpz-core",
  "mpz-fields",
