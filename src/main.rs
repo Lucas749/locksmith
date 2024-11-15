@@ -5,6 +5,7 @@ use mpz_fields::p256::P256;
 
 pub mod data;
 pub mod encrypt;
+pub mod aes;
 use encrypt::encrypt;
 
 use data::Input;

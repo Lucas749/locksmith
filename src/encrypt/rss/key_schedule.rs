@@ -1,5 +1,7 @@
-use maestro::{aes::{AesKeyState, GF8InvBlackBox}, rep3_core::{network::task::Direction::{Next, Previous}, share::RssShare, party::{error::MpcResult, MainParty, Party}}, share::gf8::GF8};
+use maestro::{aes::{GF8InvBlackBox}, rep3_core::{network::task::Direction::{Next, Previous}, share::RssShare, party::{error::MpcResult, MainParty, Party}}, share::gf8::GF8};
 use maestro::{aes::{ss::{GF8InvBlackBoxSS, GF8InvBlackBoxSSMal}}, lut256::{lut256_ss::{Lut256SSMalParty, Lut256SSParty}, LUT256Party}};
+
+use crate::aes::AesKeyState;
 
 const AES_KEYSHARE: [[u8; 16]; 3] = [
     // Party 0's share
@@ -13,6 +15,13 @@ const AES_KEYSHARE: [[u8; 16]; 3] = [
      0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F],
 ];
 
+pub fn get_combined_key() -> [u8; 16] {
+    let mut combined_key = [0u8; 16];
+    for i in 0..16 {
+        combined_key[i] = AES_KEYSHARE[0][i] ^ AES_KEYSHARE[1][i] ^ AES_KEYSHARE[2][i];
+    }
+    combined_key
+}
 
 fn aes128_keyschedule_round_mal<Protocol: GF8InvBlackBoxSSMal>(
     party: &mut Protocol,

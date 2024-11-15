@@ -6,21 +6,13 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use maestro::aes::VectorAesState;
-use maestro::aes::AesKeyState;
+use crate::aes::AesKeyState;
 
 use maestro::{rep3_core::{network::{Config, ConnectedParty}, party::{error::MpcResult, CombinedCommStats}}, lut256::lut256_ss::{Lut256SSMalParty}};
 #[derive(Parser)]
 struct Cli {
     #[arg(long, value_name = "FILE")]
     config: PathBuf,
-}
-
-fn get_combined_key() -> [u8; 16] {
-    let mut combined_key = [0u8; 16];
-    for i in 0..16 {
-        combined_key[i] = AES_KEYSHARE[0][i] ^ AES_KEYSHARE[1][i] ^ AES_KEYSHARE[2][i];
-    }
-    combined_key
 }
 
 fn hex_to_bytes(hex: &str) -> Vec<u8> {
@@ -55,7 +47,7 @@ pub fn encrypt(data_input: &Input) -> bool {
     let mut party: Lut256SSMalParty = Lut256SSMalParty::setup(conn, true, Some(0), Some("".to_string())).unwrap();
     println!("After setup");
 
-    println!("{:?}", get_combined_key());
+    println!("{:?}", rss::key_schedule::get_combined_key());
 
     let input: VectorAesState = rss::share_input::rss_input(data_input, &mut party).unwrap();
     
@@ -64,7 +56,7 @@ pub fn encrypt(data_input: &Input) -> bool {
         .collect::<Vec<_>>()
         .join(""));
 
-    let ks: Vec<AesKeyState> = keyshare_keyschedule(&mut party);
+    let ks: Vec<AesKeyState> = rss::key_schedule::keyshare_keyschedule(&mut party);
 
 
     true
