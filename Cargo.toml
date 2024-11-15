@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+mpz-core = { git = "https://github.com/privacy-scaling-explorations/mpz.git", package = "mpz-core" }
+maestro = { git = "https://github.com/KULeuven-COSIC/maestro.git", package = "maestro" }
+mpz-fields = { git = "https://github.com/privacy-scaling-explorations/mpz.git", package = "mpz-fields" }    
+rand = "0.8"
+hex = "0.4"
+aes = "0.8"
