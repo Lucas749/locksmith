@@ -3,11 +3,41 @@ pub struct Input {
     num_blocks: usize,
 }
 
+impl Clone for Input {
+    fn clone(&self) -> Self {
+        Input {
+            input_string: self.input_string.clone(),
+            num_blocks: self.num_blocks,
+        }
+    }
+}
+
 impl Input {
     pub fn from_file(input_string: &[u8], num_blocks: usize) -> Self {
         Input {
             input_string: input_string.to_vec(),
             num_blocks,
+        }
+    }
+
+    pub fn to_bytes(&self) -> Vec<u8> {
+        self.input_string.clone()
+    }
+
+    pub fn zero(num_blocks: usize) -> Self {
+        Input {
+            input_string: vec![0u8; num_blocks * 16],
+            num_blocks,
+        }
+    }
+
+    pub fn from_nonce(input: u128, blocks: usize) -> Self {
+        Input {
+            input_string: (0..blocks)
+                .map(|i| (input.wrapping_add(i as u128)).to_be_bytes().to_vec())
+                .flatten()
+                .collect(),
+            num_blocks: blocks,
         }
     }
 
@@ -30,12 +60,13 @@ impl std::fmt::Debug for Input {
 }
 
 pub struct DataLibrary {
-    inputs: std::collections::HashMap<String, Input>
+    inputs: std::collections::HashMap<String, Input>,
+    ciphertexts: std::collections::HashMap<String, String>,
 }
 
 impl DataLibrary {
     pub fn new() -> Self {
-        DataLibrary { inputs: std::collections::HashMap::new() }
+        DataLibrary { inputs: std::collections::HashMap::new(), ciphertexts: std::collections::HashMap::new() }
     }
 
     pub fn create(&mut self, name: &str, input: Input) {
@@ -44,6 +75,14 @@ impl DataLibrary {
 
     pub fn get(&self, name: &str) -> Option<&Input> {
         self.inputs.get(name)
+    }
+
+    pub fn store_ciphertext(&mut self, name: &str, ciphertext: &str) {
+        self.ciphertexts.insert(name.to_string(), ciphertext.to_string());
+    }
+
+    pub fn get_ciphertext(&self, name: &str) -> Option<&String> {
+        self.ciphertexts.get(name)
     }
 }
 
@@ -64,10 +103,13 @@ pub fn write_library_single(library: &mut DataLibrary, name: &str, filename: &st
 }
 
 pub fn create_data_library() -> DataLibrary {
-    let mut library = DataLibrary { inputs: std::collections::HashMap::new() };
+    let mut library = DataLibrary::new();
 
     write_library_single(&mut library, "short", "./src/data/sources/input-short.txt");
     write_library_single(&mut library, "long", "./src/data/sources/input-long.txt");
+
+    library.store_ciphertext("short-ecb", "da6340f38337f7f19f2c2a9bf151327e3165b40204a76a91f1f542a560713dc8945358493f31c3d45c967ad1e6404e58");
+    library.store_ciphertext("short-ctr", "c1d466ec6e520f8a8ce1000f6680df7838ba90b15327c2033be52b65cd1ac076964e0e632a4fc3dc5607450c9d4c34fb");
 
     library
 }

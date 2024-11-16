@@ -129,12 +129,13 @@ pub fn keyshare_keyschedule(
         })
         .collect();
 
-    // Create n_rounds + 1 copies of the key state
-    // (0..variant.n_rounds()+1)
-    //     .map(|_| AesKeyState::from_rss_vec(shared_key.clone()))
-    //     .collect()
     let ks: Vec<AesKeyState> = aes128_keyschedule_mal(party, shared_key).unwrap();
     
+    // println!("Keyshare key schedule:");
+    // for (i, key) in ks.iter().enumerate() {
+    //     println!("Round {}: si: {:?}, sii: {:?}", i, key.si.iter().map(|x| x.0).collect::<Vec<_>>(), key.sii.iter().map(|x| x.0).collect::<Vec<_>>());
+    // }
+
     // cast back from custom AesKeyState (pub si, sii) to maestro AesKeyState for composability with other functions
     ks.iter()
         .map(|k| maestro::aes::AesKeyState::from_rss_vec(k.to_rss_vec()))
